@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Counterfactual</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tree.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        .screen { display: none; }
+        .screen.active { display: block; }
+    </style>
+</head>
+<body>
+    <div id="ambient-particles" class="ambient-particle-layer" aria-hidden="true"></div>
+    <nav id="main-nav">
+        <div class="logo">The Counterfactual</div>
+        <div class="time-mood-selector" id="time-mood-selector" title="Time-Adaptive Atmosphere">
+            <button class="time-mood-btn" data-time="morning" title="Morning (6 AM - 12 PM): Blue Sky & Green Tree">🌅 Morning</button>
+            <button class="time-mood-btn" data-time="afternoon" title="Afternoon (12 PM - 4 PM): Golden Sun">☀️ Afternoon</button>
+            <button class="time-mood-btn" data-time="evening" title="Evening (4 PM - 7 PM): Sunset Sky">🌇 Evening</button>
+            <button class="time-mood-btn" data-time="night" title="Night (7 PM - 6 AM): Starry Night">🌌 Night</button>
+            <button class="time-mood-btn active" data-time="auto" title="Auto: Synced with real-world time">⏳ Auto</button>
+        </div>
+        <button id="nav-toggle" aria-label="Toggle Navigation">☰</button>
+        <div class="nav-links">
+            <a href="#" id="nav-home">Home</a>
+            <a href="#" id="nav-tree">Tree</a>
+            <a href="#" id="nav-dashboard">Dashboard</a>
+            <button id="add-entry-btn">+ Add Today</button>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home-screen" class="screen active">
+            <div class="hero-welcome-badge" id="hero-time-badge">🌅 Morning Inspiration</div>
+            <h1 class="hero-title">The Counterfactual</h1>
+            <h2 class="hero-greeting" id="hero-greeting">Hello there! Good morning, have a nice day 🌱</h2>
+            <p class="hero-subtitle" id="hero-quote">“Every morning brings a new seed of intention. Water it with action.”</p>
+            <button id="start-btn">Start Your Day</button>
+            <div class="hero-tree-wrapper">
+                <div class="hero-sun-glow" id="hero-sun-glow"></div>
+                <svg id="hero-tree-svg" width="220" height="200"></svg>
+            </div>
+        </section>
+
+        <section id="entry-screen" class="screen">
+            <div class="entry-header-group">
+                <span class="entry-time-pill" id="entry-time-pill">🌅 Morning Reflection</span>
+                <h2 id="entry-date-display">AUGUST 28</h2>
+                <p class="entry-greeting-msg" id="entry-greeting-msg">What intentions will you plant today?</p>
+            </div>
+            <form id="entry-form">
+                <input type="hidden" id="entry-id">
+                <div class="form-group">
+                    <label for="entry-date">Date</label>
+                    <input type="date" id="entry-date">
+                </div>
+                <div class="form-group">
+                    <label for="entry-wanted">What did you want to do?</label>
+                    <textarea id="entry-wanted" placeholder="What did you want to do?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="entry-did">What did you actually do?</label>
+                    <textarea id="entry-did" placeholder="What did you actually do?"></textarea>
+                </div>
+                
+                <div class="status-group">
+                    <label class="status-option">
+                        <input type="radio" name="status" value="done"> ✅ Done
+                    </label>
+                    <label class="status-option">
+                        <input type="radio" name="status" value="partial"> 🟡 Partial
+                    </label>
+                    <label class="status-option">
+                        <input type="radio" name="status" value="not-done"> ❌ Not Done
+                    </label>
+                </div>
+
+                <div class="tag-group">
+                    <button type="button" class="tag-pill" data-tag="work">Work</button>
+                    <button type="button" class="tag-pill" data-tag="learning">Learning</button>
+                    <button type="button" class="tag-pill" data-tag="health">Health</button>
+                    <button type="button" class="tag-pill" data-tag="social">Social</button>
+                    <button type="button" class="tag-pill" data-tag="personal">Personal</button>
+                    <button type="button" class="tag-pill" data-tag="rest">Rest</button>
+                    <button type="button" class="tag-pill" data-tag="other">Other</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="entry-intensity">Intensity: <span id="intensity-value">3</span></label>
+                    <input type="range" id="entry-intensity" min="1" max="5" value="3">
+                </div>
+
+                <div class="form-group">
+                    <div id="photo-drop-zone">
+                        <input type="file" id="photo-upload" accept="image/*" hidden>
+                        <span>Drop photo or click to upload</span>
+                        <div id="photo-preview"></div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" id="save-btn">Save Day</button>
+                    <button type="button" id="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="tree-screen" class="screen">
+            <div id="tree-header">
+                <div class="tree-title-group">
+                    <h2>Your Journey</h2>
+                    <div id="tree-stage-badge" class="tree-stage-badge">
+                        <span class="stage-icon" id="stage-icon">🌱</span>
+                        <span class="stage-text" id="stage-name">Stage I: The Sprout</span>
+                        <span class="stage-progress" id="stage-progress">(0/5 Days)</span>
+                    </div>
+                    <div id="tree-time-badge" class="tree-time-badge">
+                        <span id="tree-time-icon">🌅</span>
+                        <span id="tree-time-text">Morning Sky</span>
+                    </div>
+                </div>
+            </div>
+            <div id="tree-container" class="tree-normal">
+                <button id="walk-other-path-btn">Walk the Other Path</button>
+                <svg id="tree-svg"></svg>
+                <div id="tree-cards-container" class="tree-cards-container"></div>
+                <div class="tree-tooltip"></div>
+            </div>
+        </section>
+
+        <section id="dashboard-screen" class="screen">
+            <h2>Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span id="total-days">0</span>
+                    <label>Total Days</label>
+                </div>
+                <div class="stat-card">
+                    <span id="completed-count">0</span>
+                    <label>Completed</label>
+                </div>
+                <div class="stat-card">
+                    <span id="partial-count">0</span>
+                    <label>Partial</label>
+                </div>
+                <div class="stat-card">
+                    <span id="notdone-count">0</span>
+                    <label>Not Done</label>
+                </div>
+                <div class="stat-card">
+                    <span id="current-streak">0</span>
+                    <label>Current Streak</label>
+                </div>
+                <div class="stat-card">
+                    <span id="completion-pct">0%</span>
+                    <label>Completion Rate</label>
+                </div>
+                <div class="stat-card">
+                    <span id="common-tag">-</span>
+                    <label>Most Common Tag</label>
+                </div>
+            </div>
+            <div class="completion-bar-container">
+                <div id="completion-bar">
+                    <div class="bar-fill"></div>
+                </div>
+            </div>
+            <div id="insights-container"></div>
+            <div id="recent-entries"></div>
+        </section>
+    </main>
+
+    <div id="detail-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="modal-close">&times;</button>
+            <h3 id="modal-date"></h3>
+            <div id="modal-photo"></div>
+            <div class="modal-text-group">
+                <h4>Wanted:</h4>
+                <p id="modal-wanted"></p>
+            </div>
+            <div class="modal-text-group">
+                <h4>Did:</h4>
+                <p id="modal-did"></p>
+            </div>
+            <div class="modal-badges">
+                <span id="modal-status"></span>
+                <span id="modal-tag"></span>
+                <span id="modal-intensity"></span>
+            </div>
+            <div class="modal-actions">
+                <button id="modal-edit-btn">Edit</button>
+                <button id="modal-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <footer id="main-footer">
+        <p>The Counterfactual - All data is stored locally in your browser.</p>
+    </footer>
+
+    <script defer src="js/storage.js"></script>
+    <script defer src="js/entries.js"></script>
+    <script defer src="js/tree.js"></script>
+    <script defer src="js/insights.js"></script>
+    <script defer src="js/ui.js"></script>
+    <script defer src="js/app.js"></script>
+</body>
+</html>

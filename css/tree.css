@@ -1,0 +1,1098 @@
+/* Branch drawing animation */
+.branch-path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.branch-path.animate {
+  animation: draw-branch 1000ms ease-out forwards;
+}
+@keyframes draw-branch {
+  from { stroke-dashoffset: var(--path-length); }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ══════════════════════════════════════════════════════
+   THE COUNTERFACTUAL — EXPEDITION ROAD TIMELINE
+   (Inspired by GPS Trail & Roadmap References)
+   ══════════════════════════════════════════════════════ */
+
+#tree-container {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  min-height: calc(100vh - 140px);
+  padding: 2.5rem 1.5rem 5rem 1.5rem;
+}
+
+#tree-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Topographic Map Elevation Contour Lines (GPS Map Feel) */
+.topo-contour-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 1.2px;
+}
+
+/* Winding Highway Surface Elements */
+.road-highway-bed {
+  stroke: #1B2633;
+  stroke-width: 48px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.4));
+}
+
+.road-highway-curb {
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.road-center-stripe {
+  stroke: #FFFFFF;
+  stroke-width: 3px;
+  stroke-dasharray: 10 9;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.9;
+}
+
+/* Teardrop Map Pin Waypoint Markers (Reference 1 & 4) */
+.map-pin-group {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+.map-pin-group:hover {
+  transform: translateY(-6px) scale(1.15);
+  filter: drop-shadow(0 12px 20px rgba(255, 107, 0, 0.6));
+}
+
+.map-pin-body {
+  fill: #FF6B00;
+  stroke: #FFFFFF;
+  stroke-width: 1.8px;
+  filter: drop-shadow(0 4px 10px rgba(255, 107, 0, 0.5));
+}
+.map-pin-inner-circle {
+  fill: #FFFFFF;
+}
+.map-pin-label {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 800;
+  fill: #FF6B00;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Forking Route Lanes at Each Milestone */
+.road-lane-intended {
+  stroke: var(--wanted);
+  stroke-width: 3.5px;
+  stroke-dasharray: 6 5;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.65;
+  transition: opacity 0.5s ease, stroke-width 0.5s ease, filter 0.5s ease;
+}
+
+.road-lane-taken {
+  stroke: var(--did);
+  stroke-width: 4.5px;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 1;
+  transition: opacity 0.5s ease, stroke-width 0.5s ease, filter 0.5s ease;
+}
+
+/* Milestone Waypoint Beacons */
+.waypoint-beacon-ring {
+  fill: none;
+  stroke: #FF6B00;
+  stroke-width: 2px;
+  opacity: 0.7;
+  animation: beacon-pulse 2.2s cubic-bezier(0.2, 0.8, 0.3, 1) infinite;
+}
+
+@keyframes beacon-pulse {
+  0% { r: 6; opacity: 0.9; }
+  100% { r: 22; opacity: 0; }
+}
+
+.waypoint-beacon-core {
+  fill: #FF6B00;
+  stroke: #FFFFFF;
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 8px #FF6B00);
+}
+
+/* Walk the Other Path mode highlighting */
+.walk-other-path .road-lane-intended {
+  opacity: 1;
+  stroke-width: 6px;
+  filter: drop-shadow(0 0 10px rgba(124, 141, 156, 0.9));
+}
+.walk-other-path .road-lane-taken {
+  opacity: 0.3;
+  stroke-width: 2.5px;
+}
+
+.tree-cards-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2.75rem;
+  width: 100%;
+}
+
+/* Compact Sleek Milestone Status Pill (Inspired by Reference 1 & 2) */
+.milestone-pill-card {
+  position: relative;
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 6px 24px var(--shadow);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+  width: fit-content;
+  min-width: 260px;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.milestone-pill-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 14px 36px var(--shadow-lg);
+  border-color: #FF6B00;
+}
+
+/* Left / Right Staggering aligned with Road Waypoints */
+.milestone-pill-card.card-stagger-left {
+  margin-right: auto;
+  margin-left: 2rem;
+}
+.milestone-pill-card.card-stagger-right {
+  margin-left: auto;
+  margin-right: 2rem;
+}
+
+.milestone-pill-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.milestone-pill-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.milestone-num-badge {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 800;
+  color: #FF6B00;
+  line-height: 1;
+}
+
+.milestone-date-text {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+
+.milestone-pill-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.milestone-tag-chip {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.milestone-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.milestone-status-badge.status-done {
+  background: rgba(46, 125, 71, 0.14);
+  color: #2E7D47;
+  border: 1px solid rgba(46, 125, 71, 0.35);
+}
+.milestone-status-badge.status-partial {
+  background: rgba(229, 178, 56, 0.14);
+  color: #B3861B;
+  border: 1px solid rgba(229, 178, 56, 0.35);
+}
+.milestone-status-badge.status-not-done {
+  background: rgba(194, 84, 84, 0.14);
+  color: #C25454;
+  border: 1px solid rgba(194, 84, 84, 0.35);
+}
+
+.milestone-click-hint {
+  font-size: 10px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.milestone-pill-card:hover .milestone-click-hint {
+  color: #FF6B00;
+  opacity: 1;
+}
+
+.card-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.card-status-badge.status-done {
+  background: rgba(46, 125, 71, 0.14);
+  color: #2E7D47;
+  border: 1px solid rgba(46, 125, 71, 0.35);
+}
+.card-status-badge.status-partial {
+  background: rgba(229, 178, 56, 0.14);
+  color: #B3861B;
+  border: 1px solid rgba(229, 178, 56, 0.35);
+}
+.card-status-badge.status-not-done {
+  background: rgba(194, 84, 84, 0.14);
+  color: #C25454;
+  border: 1px solid rgba(194, 84, 84, 0.35);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.status-done .status-dot { background: #2E7D47; box-shadow: 0 0 6px rgba(46, 125, 71, 0.7); }
+.status-partial .status-dot { background: #E5B238; box-shadow: 0 0 6px rgba(229, 178, 56, 0.7); }
+.status-not-done .status-dot { background: #C25454; box-shadow: 0 0 6px rgba(194, 84, 84, 0.7); }
+
+/* Side-by-Side Comparison: Intended vs Achieved */
+.card-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: stretch;
+  margin-bottom: 1.1rem;
+}
+
+.comparison-col {
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.wanted-col {
+  background: rgba(124, 141, 156, 0.08);
+  border-left: 3.5px solid var(--wanted);
+}
+
+.did-col {
+  background: rgba(212, 140, 70, 0.09);
+  border-left: 3.5px solid var(--did);
+}
+
+.col-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.5rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.wanted-col .col-header { color: var(--wanted); }
+.did-col .col-header { color: var(--did); }
+
+.col-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0;
+}
+
+/* Card Footer: Photo thumbnail, Intensity, Action buttons */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 0.75rem;
+}
+
+.card-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.card-photo-thumb {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 6px var(--shadow);
+  transition: transform 0.25s ease;
+}
+.card-photo-thumb:hover {
+  transform: scale(1.15);
+}
+
+.card-intensity-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--did);
+}
+
+.card-action-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.card-action-btn:hover {
+  background: var(--tree);
+  color: #FFFFFF;
+  border-color: var(--tree);
+  transform: translateX(2px);
+}
+
+/* Walk the Other Path mode highlighting */
+.walk-other-path .wanted-col {
+  transform: scale(1.02);
+  background: rgba(124, 141, 156, 0.18);
+  border-left-width: 5px;
+  box-shadow: 0 4px 14px rgba(124, 141, 156, 0.25);
+}
+.walk-other-path .did-col {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
+
+/* Empty State Card */
+.tree-empty-card {
+  text-align: center;
+  padding: 3.5rem 2rem;
+  background: var(--card);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px var(--shadow);
+  margin: 2rem auto;
+  max-width: 540px;
+}
+.tree-empty-card h3 {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  color: var(--tree);
+  margin-bottom: 0.5rem;
+}
+.tree-empty-card p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 1.5rem;
+}
+.tree-empty-cta {
+  background: var(--tree);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.tree-empty-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px var(--shadow-lg);
+}
+
+/* Sleek Glowing SVG Tree Spine Conduits */
+.spine-conduit-trunk {
+  stroke: var(--tree);
+  stroke-width: 4;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.6;
+}
+.spine-conduit-branch {
+  stroke: var(--did);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.7;
+}
+.spine-node-anchor {
+  fill: var(--card);
+  stroke: var(--did);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px var(--did));
+}
+
+/* Branch colors & organic vine weight */
+.branch-wanted {
+  stroke: var(--wanted);
+  stroke-width: 2.2;
+  stroke-dasharray: 4 0;
+}
+.branch-did {
+  stroke: var(--did);
+  stroke-width: 3.2;
+}
+.branch-trunk {
+  stroke: var(--tree);
+  stroke-width: 4;
+}
+
+/* Delicate hairline tendrils connecting leaf to label tag */
+.branch-tendril {
+  stroke: var(--border);
+  stroke-width: 1;
+  stroke-dasharray: 3 2;
+  fill: none;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, stroke 0.3s ease;
+}
+.day-group:hover .branch-tendril {
+  opacity: 1;
+  stroke: var(--text-secondary);
+}
+
+/* Status leaf colors with organic botanical soft glow */
+.leaf-done {
+  fill: var(--done);
+  filter: drop-shadow(0 0 5px rgba(90, 131, 98, 0.55));
+}
+.leaf-partial {
+  fill: var(--partial);
+  filter: drop-shadow(0 0 5px rgba(214, 168, 69, 0.5));
+}
+.leaf-not-done {
+  fill: var(--not-done);
+  filter: drop-shadow(0 0 5px rgba(184, 91, 91, 0.45));
+}
+
+/* ══════════════════════════════════════════════════════
+   FLORA SYSTEM: 5-Petal Blooming Flowers & Leaf Buds
+   ══════════════════════════════════════════════════════ */
+
+/* "Did" Completed: 5-Petal Blooming Flower */
+.tree-flower {
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  cursor: pointer;
+}
+
+.tree-flower:hover {
+  transform: scale(1.35) rotate(18deg);
+  filter: drop-shadow(0 4px 12px rgba(212, 140, 70, 0.5));
+}
+
+.flower-petal {
+  stroke: rgba(250, 247, 242, 0.7);
+  stroke-width: 0.6;
+  transition: fill 0.3s ease;
+}
+
+.flower-petal-done {
+  fill: var(--did);
+}
+
+.flower-petal-partial {
+  fill: var(--partial);
+}
+
+.flower-center {
+  fill: #FAF7F2;
+  stroke: var(--tree);
+  stroke-width: 0.8;
+}
+
+.flower-stamen {
+  fill: #D6A845;
+}
+
+/* "Wanted" Intention: Unopened Leaf Buds & Willow Leaves */
+.tree-leaf-bud {
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  cursor: pointer;
+}
+
+.tree-leaf-bud:hover {
+  transform: scale(1.35) rotate(-14deg);
+  filter: drop-shadow(0 4px 10px rgba(124, 141, 156, 0.45));
+}
+
+.leaf-bud-petal {
+  fill: var(--wanted);
+  stroke: rgba(250, 247, 242, 0.7);
+  stroke-width: 0.6;
+}
+
+.leaf-bud-vein {
+  stroke: rgba(250, 247, 242, 0.85);
+  stroke-width: 0.8;
+  fill: none;
+  stroke-linecap: round;
+}
+
+/* Incomplete Goal: Dormant Twig / Fallen Petal */
+.dormant-twig {
+  stroke: var(--not-done);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.dormant-petal {
+  fill: var(--not-done);
+  opacity: 0.8;
+  stroke: rgba(250, 247, 242, 0.6);
+  stroke-width: 0.6;
+}
+
+/* ══════════════════════════════════════════════════════
+   PROFESSIONAL WOODEN TREE & MOUNTED PLACARD CARDS
+   ══════════════════════════════════════════════════════ */
+
+/* Continuous Solid Wooden Tree Trunk & Branches */
+.tree-solid-trunk {
+  fill: var(--tree);
+  stroke: var(--tree);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: fill 0.6s ease, stroke 0.6s ease;
+}
+
+.tree-solid-bough {
+  fill: none;
+  stroke: var(--tree);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.6s ease;
+}
+
+/* Professional Organic Root Network */
+.tree-root-main {
+  fill: none;
+  stroke: var(--tree);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.6s ease;
+}
+.tree-root-sub {
+  fill: none;
+  stroke: var(--tree);
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+/* Mounted Golden Placard Cards with Dark Wood Mounting Clips */
+.mounted-card-group {
+  cursor: pointer;
+  transform-origin: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+}
+.mounted-card-group:hover {
+  transform: translateY(-4px) scale(1.05);
+  filter: drop-shadow(0 10px 22px rgba(35, 24, 12, 0.35));
+}
+
+.mounted-card-bg {
+  fill: #E2A63B;
+  stroke: #C28524;
+  stroke-width: 1.2;
+  filter: drop-shadow(0 4px 10px rgba(45, 30, 16, 0.22));
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+.mounted-card-group:hover .mounted-card-bg {
+  fill: #EABA4A;
+  stroke: #A86F18;
+}
+
+/* Wanted Card (Intentions) - Soft Amber / Ochre Gold */
+.mounted-card-wanted .mounted-card-bg {
+  fill: #E5AC44;
+  stroke: #C78D2A;
+}
+/* Did Card (Actions) - Radiant Sun Amber */
+.mounted-card-did .mounted-card-bg {
+  fill: #DE9B32;
+  stroke: #BE7C1C;
+}
+
+/* Dark Wooden Mounting Clip */
+.mounted-card-clip {
+  fill: #3B2414;
+  stroke: #221408;
+  stroke-width: 0.8;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+/* Placard Typography */
+.mounted-card-title {
+  font-family: var(--font-serif);
+  font-size: 11px;
+  font-weight: 700;
+  fill: #26170A;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.mounted-card-desc {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  fill: #341F0E;
+  text-anchor: middle;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+}
+
+/* Bicolor Slender Botanical Leaves (Sage Green & Forest Pine) */
+.leaf-sage {
+  fill: #557A5D;
+  stroke: rgba(250, 247, 242, 0.35);
+  stroke-width: 0.6;
+  transition: transform 0.3s ease, fill 0.3s ease;
+}
+.leaf-forest {
+  fill: #2A4230;
+  stroke: rgba(250, 247, 242, 0.35);
+  stroke-width: 0.6;
+  transition: transform 0.3s ease, fill 0.3s ease;
+}
+.bough-leaf-pair:hover .leaf-sage,
+.bough-leaf-pair:hover .leaf-forest {
+  transform: scale(1.25);
+  filter: drop-shadow(0 3px 6px rgba(35, 60, 40, 0.45));
+}
+
+/* Wooden 5-Petal Flower Blossom */
+.flower-wood-petal {
+  fill: #C97232;
+  stroke: #8C4718;
+  stroke-width: 0.7;
+  transition: fill 0.3s ease;
+}
+.flower-wood-center {
+  fill: #3D2614;
+  stroke: #FAF7F2;
+  stroke-width: 1;
+}
+
+/* Gentle Wind Sway for Living Canopy */
+@keyframes gentle-breeze {
+  0%, 100% { transform: rotate(0deg); }
+  35% { transform: rotate(0.45deg); }
+  75% { transform: rotate(-0.45deg); }
+}
+
+.living-tree-canopy {
+  transform-origin: 50% 92%;
+  animation: gentle-breeze 10s ease-in-out infinite;
+}
+
+/* Growth Stage Badge in Header */
+.tree-title-group {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.tree-stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 24px;
+  font-size: 12px;
+  box-shadow: 0 2px 8px var(--shadow);
+  color: var(--text);
+  font-weight: 500;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tree-stage-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-lg);
+}
+
+.tree-stage-badge .stage-icon {
+  font-size: 15px;
+}
+
+.tree-stage-badge .stage-text {
+  font-weight: 600;
+  color: var(--tree);
+}
+
+.tree-stage-badge .stage-progress {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+/* Leaf decorations & pulse on hover */
+.leaf-shape {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+  transform-origin: center;
+}
+.day-group:hover .leaf-shape {
+  transform: scale(1.25);
+  opacity: 1;
+}
+
+/* Floating Parchment Label Tags (Pill tags with tactile drop shadow) */
+.tree-label-tag-group {
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+.tree-label-tag-group:hover {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.tree-label-tag-bg {
+  fill: var(--card);
+  stroke: var(--border);
+  stroke-width: 1;
+  filter: drop-shadow(0 2px 6px rgba(44, 56, 50, 0.08));
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+.tree-label-tag-group:hover .tree-label-tag-bg {
+  fill: #FFFFFF;
+  stroke: var(--tree);
+}
+
+.tree-label-tag-text {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--text);
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   DIVERSE PHOTO FRAMES: Unique Frame for Each Image
+   ══════════════════════════════════════════════════════ */
+.photo-frame-group {
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  transform-origin: center;
+}
+.photo-frame-group:hover {
+  transform: scale(1.18);
+  filter: drop-shadow(0 10px 22px rgba(44, 56, 50, 0.25));
+}
+
+/* 1. Classic Polaroid Frame */
+.frame-polaroid-card {
+  fill: #FAF7F2;
+  stroke: var(--border);
+  stroke-width: 1.2;
+}
+.frame-tape {
+  fill: rgba(212, 140, 70, 0.45);
+  stroke: rgba(212, 140, 70, 0.7);
+  stroke-width: 0.6;
+}
+
+/* 2. Pressed Brass & Glass Botanical Frame */
+.frame-brass-outer {
+  fill: rgba(250, 247, 242, 0.9);
+  stroke: #D4A359;
+  stroke-width: 2;
+}
+.frame-brass-inner {
+  fill: none;
+  stroke: #B8863A;
+  stroke-width: 0.8;
+}
+.frame-brass-ring {
+  fill: none;
+  stroke: #D4A359;
+  stroke-width: 1.5;
+}
+.frame-brass-stud {
+  fill: #E6BC70;
+  stroke: #8C6226;
+  stroke-width: 0.5;
+}
+
+/* 3. Vintage Postage Stamp Frame */
+.frame-stamp-base {
+  fill: #FAF6EE;
+  stroke: #D6CEBE;
+  stroke-width: 1;
+}
+.frame-stamp-perforations {
+  fill: none;
+  stroke: #C2B8A3;
+  stroke-width: 1.2;
+  stroke-dasharray: 2 3;
+}
+.frame-stamp-postmark {
+  stroke: #A89C86;
+  stroke-width: 1;
+  fill: none;
+  opacity: 0.7;
+}
+
+/* 4. Rustic Cedar Wood Bevel Frame */
+.frame-wood-outer {
+  fill: #5A3E28;
+  stroke: #3A2616;
+  stroke-width: 2.5;
+}
+.frame-wood-inner {
+  fill: none;
+  stroke: #D4A359;
+  stroke-width: 1;
+}
+
+/* 5. Antique Oval Cameo / Locket Frame */
+.frame-cameo-bezel {
+  fill: #FAF7F2;
+  stroke: #C59B4B;
+  stroke-width: 2;
+}
+.frame-cameo-inner {
+  fill: none;
+  stroke: #8C6226;
+  stroke-width: 0.8;
+  stroke-dasharray: 2 2;
+}
+.frame-cameo-crown {
+  fill: #FAF7F2;
+  stroke: #C59B4B;
+  stroke-width: 1.2;
+}
+
+/* Evening & Night theme adjustments for diverse frames */
+body.time-evening .frame-polaroid-card,
+body.time-night .frame-polaroid-card,
+body.time-evening .frame-stamp-base,
+body.time-night .frame-stamp-base {
+  fill: #253342;
+  stroke: #425870;
+}
+body.time-evening .frame-brass-outer,
+body.time-night .frame-brass-outer,
+body.time-evening .frame-cameo-bezel,
+body.time-night .frame-cameo-bezel {
+  fill: #1A2736;
+  stroke: #E5A466;
+}
+
+.node-photo {
+  opacity: 0;
+}
+.node-photo.animate {
+  animation: photo-bloom 500ms ease-out forwards;
+}
+@keyframes photo-bloom {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Botanical Day Node Circle (when no photo) */
+.node-circle {
+  fill: var(--card);
+  stroke: var(--tree);
+  stroke-width: 2.2;
+  filter: drop-shadow(0 3px 8px rgba(44, 56, 50, 0.12));
+}
+
+/* Tree central date label */
+.tree-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--text-secondary);
+  text-anchor: middle;
+  letter-spacing: 0.04em;
+}
+
+/* Header entrance animation */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  opacity: 0;
+  animation: fade-up 700ms cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+}
+
+/* Save button states */
+@keyframes save-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.96); }
+}
+.save-saving { animation: save-pulse 600ms ease-in-out; }
+
+/* Count-up for numbers */
+@keyframes count-up-bar {
+  from { width: 0; }
+}
+
+/* Hero seed animation */
+@keyframes seed-sprout {
+  0% { stroke-dashoffset: 120; opacity: 0.2; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+.hero-branch {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: seed-sprout 1600ms ease-out forwards;
+}
+
+/* Tooltip in scrapbook style */
+.tree-tooltip {
+  position: absolute;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.7);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease, transform 220ms ease;
+  z-index: 100;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  transform: translateY(4px);
+}
+.tree-tooltip.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.tooltip-date {
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  color: var(--tree);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 4px;
+}
+.tooltip-wanted span, .tooltip-did span {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.tooltip-wanted, .tooltip-did {
+  margin-bottom: 5px;
+  max-width: 220px;
+  line-height: 1.4;
+}
+.tooltip-wanted {
+  color: var(--wanted);
+}
+.tooltip-did {
+  color: var(--did);
+}
+.tooltip-status {
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+#walk-other-path-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 300ms, border 300ms, transform 200ms, box-shadow 300ms;
+  box-shadow: 0 2px 8px var(--shadow);
+  z-index: 10;
+}
+#walk-other-path-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-lg);
+  border-color: var(--wanted);
+}
+#walk-other-path-btn.active {
+  background: var(--tree);
+  color: #FAF7F2;
+  border-color: var(--tree);
+  box-shadow: 0 4px 14px rgba(44, 56, 50, 0.25);
+}
