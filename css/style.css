@@ -1,27 +1,22 @@
 :root {
-  --background: #F4EFE6;
-  --bg: #F4EFE6;
-  --card: #FAF7F2;
-  --bg-card: #FAF7F2;
-  --border: #E3DCD1;
-  --border-subtle: #EDE7DE;
-  --text: #262522;
-  --text-secondary: #736E65;
-  --tree: #2C3832;
-  --tree-light: #3D4F46;
-  --wanted: #7C8D9C;
-  --did: #D48C46;
-  --done: #5A8362;
-  --partial: #D6A845;
-  --not-done: #B85B5B;
-  --shadow: rgba(44, 56, 50, 0.07);
-  --shadow-lg: rgba(44, 56, 50, 0.14);
+  --background: #F4EFE5;
+  --bg: #F4EFE5;
+  --text: #252522;
+  --road: #252A2D;
+  --actual: #C8752D;
+  --did: #C8752D;
+  --alternative: #78A8B8;
+  --wanted: #78A8B8;
+  --card: #FCFAF5;
+  --bg-card: #FCFAF5;
+  --muted: #858078;
+  --text-secondary: #858078;
+  --border: #E5DFC8;
+  --border-subtle: #EDE7D8;
+  --shadow: rgba(37, 37, 34, 0.05);
+  --shadow-lg: rgba(37, 37, 34, 0.1);
   --font-serif: 'DM Serif Display', Georgia, serif;
   --font-sans: 'Inter', -apple-system, sans-serif;
-  --bg-img-morning: url("file:///C:/Users/HOME/.gemini/antigravity/brain/0e309019-ec51-4780-87bc-fac1b1bcb36a/.user_uploaded/media_1787927765982.jpg");
-  --bg-img-afternoon: url("file:///C:/Users/HOME/.gemini/antigravity/brain/0e309019-ec51-4780-87bc-fac1b1bcb36a/.user_uploaded/media_1787927767695.jpg");
-  --bg-img-evening: url("file:///C:/Users/HOME/.gemini/antigravity/brain/0e309019-ec51-4780-87bc-fac1b1bcb36a/.user_uploaded/media_1787927813388.png");
-  --bg-img-night: url("file:///C:/Users/HOME/.gemini/antigravity/brain/0e309019-ec51-4780-87bc-fac1b1bcb36a/.user_uploaded/media_1787927841159.png");
 }
 
 * {
@@ -30,151 +25,97 @@
   padding: 0;
 }
 
-/* Aged Paper Vignette, Vellum Noise & Living Sketchbook Canvas */
+/* Atmospheric Personal Journal & Journey Canvas */
 body {
   background-color: var(--bg);
-  background-attachment: fixed !important;
-  background-size: cover !important;
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
   color: var(--text);
   font-family: var(--font-sans);
   line-height: 1.6;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  transition: background-color 0.7s ease, color 0.7s ease;
+  transition: background-color 0.8s ease, color 0.8s ease;
 }
 
-/* 1. MORNING (6:00 AM – 11:59 AM) - Blue Sky, White Sun & Vibrant Green Tree */
+/* 1. MORNING (6:00 AM – 11:59 AM) - Warm Cream */
 body.time-morning {
-  background-image: 
-    radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.6) 18%, rgba(235, 245, 255, 0.2) 50%, rgba(215, 235, 250, 0.35) 100%),
-    linear-gradient(180deg, rgba(230, 244, 255, 0.35) 0%, rgba(245, 250, 255, 0.68) 50%, rgba(240, 248, 242, 0.88) 100%),
-    var(--bg-img-morning);
-  background-size: cover, cover, cover !important;
-  background-position: center top, center top, center center !important;
-  background-repeat: no-repeat, no-repeat, no-repeat !important;
-  background-attachment: fixed, fixed, fixed !important;
-  --background: #EBF4FA;
-  --bg: #EBF4FA;
-  --card: rgba(255, 255, 255, 0.88);
-  --bg-card: rgba(255, 255, 255, 0.88);
-  --border: rgba(185, 215, 235, 0.7);
-  --border-subtle: rgba(205, 228, 245, 0.5);
-  --text: #14281E;
-  --text-secondary: #456352;
-  --tree: #1B5E36;      /* Vibrant Botanical Green Tree */
-  --tree-light: #2E7D47;
-  --wanted: #3E6E8C;   /* Dewdrop Morning Blue Buds */
-  --did: #E68A2E;      /* Sunlit Morning Amber */
-  --done: #2E7D47;     /* Crisp Leaf Green Flower */
-  --partial: #E5B238;  /* Sunlight Gold */
-  --not-done: #C25454; /* Rose Dewdrop */
-  --shadow: rgba(20, 40, 30, 0.08);
-  --shadow-lg: rgba(20, 40, 30, 0.16);
+  background: #F4EFE5;
+  --background: #F4EFE5;
+  --bg: #F4EFE5;
+  --card: #FCFAF5;
+  --bg-card: #FCFAF5;
+  --text: #252522;
+  --text-secondary: #858078;
+  --road: #252A2D;
+  --actual: #C8752D;
+  --did: #C8752D;
+  --alternative: #78A8B8;
+  --wanted: #78A8B8;
+  --border: #E5DFC8;
+  --border-subtle: #EDE7D8;
+  --shadow: rgba(37, 37, 34, 0.05);
+  --shadow-lg: rgba(37, 37, 34, 0.1);
 }
 
-body.time-morning .seed-mote {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(230, 138, 46, 0.6) 40%, rgba(46, 125, 71, 0) 100%);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-}
-
-/* 2. AFTERNOON (12:00 PM – 3:59 PM) - Golden Warm Sunlight & Earthy Terracotta */
+/* 2. AFTERNOON (12:00 PM – 3:59 PM) - Light Cool Gray-Blue */
 body.time-afternoon {
-  background-image: 
-    radial-gradient(circle at 50% 25%, rgba(255, 245, 215, 0.4) 0%, rgba(255, 235, 185, 0.2) 45%, rgba(250, 245, 235, 0.6) 80%, rgba(245, 238, 225, 0.88) 100%),
-    linear-gradient(180deg, rgba(255, 248, 235, 0.3) 0%, rgba(252, 245, 232, 0.68) 50%, rgba(245, 235, 218, 0.88) 100%),
-    var(--bg-img-afternoon);
-  background-size: cover, cover, cover !important;
-  background-position: center top, center top, center center !important;
-  background-repeat: no-repeat, no-repeat, no-repeat !important;
-  background-attachment: fixed, fixed, fixed !important;
-  --background: #F8F2E6;
-  --bg: #F8F2E6;
-  --card: rgba(255, 252, 247, 0.9);
-  --bg-card: rgba(255, 252, 247, 0.9);
-  --border: rgba(225, 210, 185, 0.7);
-  --border-subtle: rgba(240, 228, 208, 0.5);
-  --text: #2D2418;
-  --text-secondary: #786754;
-  --tree: #3A2B1F;      /* Warm Earthy Cedar Bark */
-  --tree-light: #523E2E;
-  --wanted: #6E8294;   /* Haze Blue Buds */
-  --did: #D47B2E;      /* Bright Sunlit Terracotta */
-  --done: #4E8256;     /* Moss Olive Flower */
-  --partial: #D9A42E;  /* Warm Gold */
-  --not-done: #B85050; /* Sunbaked Rust */
-  --shadow: rgba(45, 36, 24, 0.08);
-  --shadow-lg: rgba(45, 36, 24, 0.16);
+  background: #E8EDF0;
+  --background: #E8EDF0;
+  --bg: #E8EDF0;
+  --card: #F4F7F9;
+  --bg-card: #F4F7F9;
+  --text: #22282C;
+  --text-secondary: #6A757C;
+  --road: #252A2D;
+  --actual: #C8752D;
+  --did: #C8752D;
+  --alternative: #78A8B8;
+  --wanted: #78A8B8;
+  --border: #D6DEE3;
+  --border-subtle: #E0E7EC;
+  --shadow: rgba(34, 40, 44, 0.05);
+  --shadow-lg: rgba(34, 40, 44, 0.1);
 }
 
-body.time-afternoon .seed-mote {
-  background: radial-gradient(circle, rgba(255, 215, 80, 0.9) 0%, rgba(212, 123, 46, 0.5) 45%, rgba(78, 130, 86, 0) 100%);
-  box-shadow: 0 0 6px rgba(255, 215, 80, 0.6);
-}
-
-/* 3. EVENING (4:00 PM – 6:59 PM) - Sunset Fiery Purple, Orange & Magenta */
+/* 3. EVENING (4:00 PM – 6:59 PM) - Warm Charcoal */
 body.time-evening {
-  background-image: 
-    radial-gradient(circle at 50% 35%, rgba(245, 125, 60, 0.35) 0%, rgba(130, 60, 110, 0.3) 45%, rgba(45, 25, 45, 0.75) 85%, rgba(25, 15, 28, 0.94) 100%),
-    linear-gradient(180deg, rgba(245, 140, 75, 0.3) 0%, rgba(65, 35, 65, 0.7) 60%, rgba(30, 18, 35, 0.92) 100%),
-    var(--bg-img-evening);
-  background-size: cover, cover, cover !important;
-  background-position: center top, center top, center center !important;
-  background-repeat: no-repeat, no-repeat, no-repeat !important;
-  background-attachment: fixed, fixed, fixed !important;
-  --background: #1F1522;
-  --bg: #1F1522;
-  --card: rgba(42, 28, 48, 0.88);
-  --bg-card: rgba(42, 28, 48, 0.88);
-  --border: rgba(185, 110, 160, 0.4);
-  --border-subtle: rgba(140, 80, 120, 0.3);
-  --text: #FFF3EA;
-  --text-secondary: #D4B5CC;
-  --tree: #F29653;      /* Sunset Radiant Bark */
-  --tree-light: #F7B580;
-  --wanted: #B3A0CC;   /* Dusk Lavender Buds */
-  --did: #E6653B;      /* Fiery Sunset Orange */
-  --done: #5FB378;     /* Luminous Green Flower */
-  --partial: #F2BA49;  /* Sunset Gold */
-  --not-done: #E05A68; /* Dusk Crimson */
-  --shadow: rgba(0, 0, 0, 0.35);
-  --shadow-lg: rgba(0, 0, 0, 0.55);
+  background: #27272A;
+  --background: #27272A;
+  --bg: #27272A;
+  --card: #323236;
+  --bg-card: #323236;
+  --text: #F4F4F5;
+  --text-secondary: #A1A1AA;
+  --road: #1A1A1D;
+  --actual: #D88235;
+  --did: #D88235;
+  --alternative: #89B8C8;
+  --wanted: #89B8C8;
+  --border: #44444A;
+  --border-subtle: #3A3A40;
+  --shadow: rgba(0, 0, 0, 0.25);
+  --shadow-lg: rgba(0, 0, 0, 0.45);
 }
 
-body.time-evening .seed-mote {
-  background: radial-gradient(circle, rgba(242, 186, 73, 0.95) 0%, rgba(230, 101, 59, 0.6) 45%, rgba(179, 160, 204, 0) 100%);
-  box-shadow: 0 0 10px rgba(242, 186, 73, 0.85);
-}
-
-/* 4. NIGHT (7:00 PM – 5:59 AM) - Starry Sky, Midnight Lake & Glowing Stars */
+/* 4. NIGHT (7:00 PM – 5:59 AM) - Deep Blue-Black */
 body.time-night {
-  background-image: 
-    radial-gradient(circle at 50% 20%, rgba(100, 150, 220, 0.2) 0%, rgba(25, 45, 75, 0.35) 45%, rgba(12, 20, 32, 0.85) 85%, rgba(8, 14, 22, 0.96) 100%),
-    linear-gradient(180deg, rgba(15, 30, 50, 0.4) 0%, rgba(12, 24, 38, 0.75) 60%, rgba(8, 16, 26, 0.95) 100%),
-    var(--bg-img-night);
-  background-size: cover, cover, cover !important;
-  background-position: center top, center top, center center !important;
-  background-repeat: no-repeat, no-repeat, no-repeat !important;
-  background-attachment: fixed, fixed, fixed !important;
-  --background: #0E1724;
-  --bg: #0E1724;
-  --card: rgba(20, 32, 48, 0.88);
-  --bg-card: rgba(20, 32, 48, 0.88);
-  --border: rgba(85, 125, 175, 0.4);
-  --border-subtle: rgba(60, 95, 135, 0.3);
-  --text: #F0F6FC;
-  --text-secondary: #9DB4CC;
-  --tree: #8CB8E6;      /* Luminous Starlight Bark */
-  --tree-light: #B5D4F5;
-  --wanted: #9BB8DC;   /* Moonlit Blue Buds */
-  --did: #F29E4C;      /* Starlight Amber */
-  --done: #52B788;     /* Bioluminescent Green Flower */
-  --partial: #F3C969;  /* Stardust Gold */
-  --not-done: #E06C75; /* Nebula Rose */
-  --shadow: rgba(0, 0, 0, 0.45);
-  --shadow-lg: rgba(0, 0, 0, 0.7);
+  background: #10151D;
+  --background: #10151D;
+  --bg: #10151D;
+  --surface: #181F2A;
+  --card: #181F2A;
+  --bg-card: #181F2A;
+  --text: #F0F4F8;
+  --text-secondary: #8E9BAE;
+  --road: #0A0D12;
+  --actual: #DC873B;
+  --did: #DC873B;
+  --alternative: #92C0D4;
+  --wanted: #92C0D4;
+  --border: #283344;
+  --border-subtle: #202937;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --shadow-lg: rgba(0, 0, 0, 0.6);
 }
 
 body.time-night .seed-mote {

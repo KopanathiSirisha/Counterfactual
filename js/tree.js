@@ -20,40 +20,26 @@
       .replace(/"/g, '&quot;');
   }
 
-  // Calculate Growth Stage based on entry count
-  function getTreeGrowthStage(entryCount) {
+  // Consistent seeded random based on ID
+  function seededRandom(seed) {
+    let s = 0;
+    for (let i = 0; i < seed.length; i++) s = ((s << 5) - s + seed.charCodeAt(i)) | 0;
+    return function() {
+      s = (s * 16807 + 0) % 2147483647;
+      return (s & 0x7fffffff) / 2147483647;
+    };
+  }
+
+  // Milestone Stages for the Journey Decision Map
+  function getJourneyStage(entryCount) {
     if (entryCount <= 5) {
-      return {
-        key: 'sprout',
-        level: 'Stage I',
-        name: 'The Sprout',
-        icon: '🌱',
-        progress: `(${entryCount}/5 Days)`
-      };
+      return 'Epoch I · The Trailhead';
     } else if (entryCount <= 20) {
-      return {
-        key: 'sapling',
-        level: 'Stage II',
-        name: 'The Sapling',
-        icon: '🌿',
-        progress: `(${entryCount}/20 Days)`
-      };
+      return 'Epoch II · The Forking Path';
     } else if (entryCount <= 50) {
-      return {
-        key: 'young-tree',
-        level: 'Stage III',
-        name: 'The Young Tree',
-        icon: '🌳',
-        progress: `(${entryCount}/50 Days)`
-      };
+      return 'Epoch III · The Divergent Journey';
     } else {
-      return {
-        key: 'ancient-canopy',
-        level: 'Stage IV',
-        name: 'The Flourishing Tree',
-        icon: '🌺',
-        progress: `(${entryCount} Days • Flourishing)`
-      };
+      return 'Epoch IV · The Flourishing Journey';
     }
   }
 
@@ -64,31 +50,27 @@
       const container = document.getElementById('tree-container');
       const svg = document.getElementById('tree-svg');
       const cardsContainer = document.getElementById('tree-cards-container');
-      if (!container) return;
+      if (!container || !svg) return;
 
       const entries = window.Entries ? window.Entries.getAll() : [];
-      const stage = getTreeGrowthStage(entries.length);
+      const stageName = getJourneyStage(entries.length);
 
-      // Update Growth Stage Badge in Header
-      const stageIconEl = document.getElementById('stage-icon');
+      // Update Stage Badge in Header
       const stageNameEl = document.getElementById('stage-name');
-      const stageProgressEl = document.getElementById('stage-progress');
-      if (stageIconEl) stageIconEl.textContent = stage.icon;
-      if (stageNameEl) stageNameEl.textContent = `${stage.level}: ${stage.name}`;
-      if (stageProgressEl) stageProgressEl.textContent = stage.progress;
+      if (stageNameEl) stageNameEl.textContent = stageName;
 
       // Clear containers
-      if (svg) svg.innerHTML = '';
+      svg.innerHTML = '';
       if (cardsContainer) cardsContainer.innerHTML = '';
 
       if (entries.length === 0) {
         if (cardsContainer) {
           cardsContainer.innerHTML = `
-            <div class="tree-empty-card">
-              <div style="font-size: 40px; margin-bottom: 0.75rem;">🌱</div>
-              <h3>Your Reflective Journey Begins Here</h3>
-              <p>Log what you intended to do versus what you actually did each day to build your interactive growth timeline.</p>
-              <button class="tree-empty-cta" id="empty-add-btn">+ Add Your First Day</button>
+            <div class="tree-empty-card" style="text-align: center; max-width: 440px; margin: 3.5rem auto; padding: 2.25rem 2rem; background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 4px 20px var(--shadow);">
+              <div style="font-size: 28px; margin-bottom: 0.75rem; color: var(--actual);">🛣️</div>
+              <h3 style="font-family: var(--font-serif); font-size: 22px; margin-bottom: 0.6rem; color: var(--text);">Begin Your Journey Map</h3>
+              <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.4rem;">Record what you intended to do versus what path you actually took to watch your personal life map emerge.</p>
+              <button class="tree-empty-cta" id="empty-add-btn" style="padding: 10px 22px; border-radius: 24px; background: var(--actual); color: #fff; border: none; font-size: 13.5px; font-weight: 500; cursor: pointer;">+ Record Today's Decision</button>
             </div>
           `;
           const emptyBtn = document.getElementById('empty-add-btn');
@@ -102,161 +84,182 @@
       }
 
       // ════════════════════════════════════════════════════════════════
-      // WINDING JOURNEY HIGHWAY & FORKING LANES ENGINE
+      // ARTISTIC ORGANIC ROAD & BRANCHING DECISION MAP ENGINE
       // ════════════════════════════════════════════════════════════════
       const totalEntries = entries.length;
-      const cardSpacing = 240;
+      const verticalSpacing = 160;
       const groundPadding = 60;
       const topPadding = 80;
-      const totalHeight = Math.max(650, topPadding + (totalEntries * cardSpacing) + groundPadding);
+      const totalHeight = Math.max(620, topPadding + (totalEntries * verticalSpacing) + groundPadding);
       const groundY = totalHeight - 40;
       const topY = 40;
-      const svgWidth = 960;
+      const svgWidth = 920;
       const centerX = svgWidth / 2;
 
       svg.setAttribute('viewBox', `0 0 ${svgWidth} ${totalHeight}`);
       svg.setAttribute('preserveAspectRatio', 'xMidYMin meet');
 
-      // 1. Render Topographic Elevation Contours (GPS Map Feel)
-      const topoLines = [
-        `M 0 ${totalHeight * 0.15} Q 260 ${totalHeight * 0.12}, 520 ${totalHeight * 0.18} T ${svgWidth} ${totalHeight * 0.14}`,
-        `M 0 ${totalHeight * 0.38} Q 280 ${totalHeight * 0.32}, 560 ${totalHeight * 0.42} T ${svgWidth} ${totalHeight * 0.36}`,
-        `M 0 ${totalHeight * 0.62} Q 240 ${totalHeight * 0.58}, 500 ${totalHeight * 0.66} T ${svgWidth} ${totalHeight * 0.6}`,
-        `M 0 ${totalHeight * 0.85} Q 320 ${totalHeight * 0.8}, 620 ${totalHeight * 0.88} T ${svgWidth} ${totalHeight * 0.82}`
-      ];
-      topoLines.forEach(d => {
-        const topo = createSvgElement('path', { class: 'topo-contour-line', d });
-        svg.appendChild(topo);
-      });
-
-      // 2. Generate Continuous Winding Highway Spine (Reference 1 & 2)
+      // 1. Generate Organic Winding Road Waypoints
       const waypoints = [];
       waypoints.push({ x: centerX, y: groundY });
 
       for (let i = 0; i < totalEntries; i++) {
-        const wpY = groundY - 110 - (i * cardSpacing);
-        const wpX = i % 2 === 0 ? 350 : 610;
-        waypoints.push({ x: wpX, y: wpY, index: i });
+        const entry = entries[i];
+        const rand = seededRandom(entry.id || String(i));
+        const wpY = groundY - 90 - (i * verticalSpacing);
+        // Subtle natural S-curve oscillation with slight organic imperfection
+        const isLeft = (i % 2 === 0);
+        const xOffset = (isLeft ? -130 : 130) + ((rand() - 0.5) * 35);
+        const wpX = centerX + xOffset;
+        waypoints.push({ x: wpX, y: wpY, entry, index: i, rand, isLeft });
       }
       waypoints.push({ x: centerX, y: topY });
 
-      // Construct Smooth Highway Curve
-      let highwayPathD = `M ${waypoints[0].x} ${waypoints[0].y}`;
+      // Construct Smooth Organic Road Spine (Bezier Curve)
+      let roadPathD = `M ${waypoints[0].x} ${waypoints[0].y}`;
       for (let w = 0; w < waypoints.length - 1; w++) {
         const curr = waypoints[w];
         const next = waypoints[w + 1];
         const midY = (curr.y + next.y) / 2;
-        highwayPathD += ` C ${curr.x} ${midY}, ${next.x} ${midY}, ${next.x} ${next.y}`;
+        roadPathD += ` C ${curr.x} ${midY}, ${next.x} ${midY}, ${next.x} ${next.y}`;
       }
 
-      // Asphalt Road Bed
-      const roadBed = createSvgElement('path', {
-        class: 'road-highway-bed',
-        d: highwayPathD
+      // Inked Painted Journey Road (No continuous highway dashed centerline)
+      const roadTrack = createSvgElement('path', {
+        class: 'road-track animate',
+        d: roadPathD
       });
-      svg.appendChild(roadBed);
+      svg.appendChild(roadTrack);
 
-      // Road Shoulder Curbs
-      const roadCurb = createSvgElement('path', {
-        class: 'road-highway-curb',
-        d: highwayPathD
-      });
-      svg.appendChild(roadCurb);
+      // Subtle Environmental Route Trail Dots along the path
+      for (let w = 0; w < waypoints.length; w++) {
+        const wp = waypoints[w];
+        const dotOffset = (w % 2 === 0 ? 45 : -45);
+        const trailDot = createSvgElement('circle', {
+          class: 'route-trail-marker',
+          cx: wp.x + dotOffset,
+          cy: wp.y - 20,
+          r: 1.6
+        });
+        svg.appendChild(trailDot);
+      }
 
-      // Center Dashed Lane Markings
-      const roadCenterStripe = createSvgElement('path', {
-        class: 'road-center-stripe',
-        d: highwayPathD
-      });
-      svg.appendChild(roadCenterStripe);
-
-      // 3. Render Waypoint Map Pins & Forking Lanes
+      // 2. Render Branches, Decision Markers & Journal Memory Cards
       for (let i = 0; i < totalEntries; i++) {
-        const entry = entries[i];
         const wp = waypoints[i + 1];
-        const statusKey = entry.status || 'done';
-        const statusClass = `status-${statusKey}`;
-        const statusLabel = statusKey === 'done' ? 'Reached' : (statusKey === 'partial' ? 'Detour' : 'Roadblock');
-        const formattedDate = window.UI ? window.UI.formatDate(entry.date) : entry.date;
-        const tagLabel = (entry.tag || 'General').toUpperCase();
+        const entry = wp.entry;
         const milestoneNum = String(i + 1).padStart(2, '0');
+        const formattedDate = window.UI ? window.UI.formatDate(entry.date) : entry.date;
 
-        // Forking lane left (Intended Route - The Road Not Taken)
-        const intendedLaneD = `M ${wp.x} ${wp.y} C ${wp.x - 70} ${wp.y}, ${wp.x - 140} ${wp.y - 30}, ${wp.x - 190} ${wp.y - 30}`;
-        const laneIntended = createSvgElement('path', {
-          class: 'road-lane-intended',
-          d: intendedLaneD
-        });
-        svg.appendChild(laneIntended);
+        const cardSide = wp.isLeft ? -1 : 1; // Left or Right direction
 
-        // Forking lane right (Taken Route - The Road Taken)
-        const takenLaneD = `M ${wp.x} ${wp.y} C ${wp.x + 70} ${wp.y}, ${wp.x + 140} ${wp.y - 30}, ${wp.x + 190} ${wp.y - 30}`;
-        const laneTaken = createSvgElement('path', {
-          class: 'road-lane-taken',
-          d: takenLaneD
-        });
-        svg.appendChild(laneTaken);
+        // 2A. Orange Branch: What Actually Happened (Solid Line)
+        const actualBranchEndX = wp.x + (cardSide * 125);
+        const actualBranchEndY = wp.y - 15;
+        const actualBranchD = `M ${wp.x} ${wp.y} Q ${wp.x + (cardSide * 60)} ${wp.y + 5}, ${actualBranchEndX} ${actualBranchEndY}`;
 
-        // Waypoint Beacon Pulse Ring
-        const beaconRing = createSvgElement('circle', {
-          class: 'waypoint-beacon-ring',
-          cx: wp.x,
-          cy: wp.y,
-          r: 10
+        const branchActual = createSvgElement('path', {
+          class: 'branch-actual animate',
+          d: actualBranchD
         });
-        svg.appendChild(beaconRing);
+        svg.appendChild(branchActual);
 
-        // Teardrop Location Map Pin (Reference 1 & 4)
-        const pinGroup = createSvgElement('g', {
-          class: 'map-pin-group',
-          transform: `translate(${wp.x}, ${wp.y})`
+        // 2B. Blue Branch: What Could Have Happened (Dashed Line)
+        const altSide = -cardSide; // Opposite direction
+        const altBranchEndX = wp.x + (altSide * 115);
+        const altBranchEndY = wp.y - 30;
+        const altBranchD = `M ${wp.x} ${wp.y} Q ${wp.x + (altSide * 55)} ${wp.y - 10}, ${altBranchEndX} ${altBranchEndY}`;
+
+        const branchAlt = createSvgElement('path', {
+          class: 'branch-alternative animate',
+          d: altBranchD
         });
-        const pinBody = createSvgElement('path', {
-          class: 'map-pin-body',
-          d: 'M 0 0 C -11 -10, -13 -24, 0 -24 C 13 -24, 11 -10, 0 0 Z'
+        svg.appendChild(branchAlt);
+
+        // 2C. Alternative Ghost Circle (○)
+        const ghostMarker = createSvgElement('g', {
+          class: 'alt-ghost-marker',
+          transform: `translate(${altBranchEndX}, ${altBranchEndY})`
         });
-        const pinCircle = createSvgElement('circle', {
-          class: 'map-pin-inner-circle',
+        const ghostCircle = createSvgElement('circle', {
+          class: 'alt-ghost-circle',
           cx: 0,
-          cy: -14.5,
-          r: 6
+          cy: 0,
+          r: 5.5
         });
-        const pinText = createSvgElement('text', {
-          class: 'map-pin-label',
-          x: 0,
-          y: -14
+        ghostMarker.appendChild(ghostCircle);
+
+        ghostMarker.addEventListener('mouseenter', (e) => {
+          const rect = ghostMarker.getBoundingClientRect();
+          window.Tree.showTooltip(entry, rect.left + window.scrollX + 15, rect.top + window.scrollY - 30);
         });
-        pinText.textContent = milestoneNum;
-
-        pinGroup.appendChild(pinBody);
-        pinGroup.appendChild(pinCircle);
-        pinGroup.appendChild(pinText);
-
-        pinGroup.addEventListener('click', () => {
+        ghostMarker.addEventListener('mouseleave', () => {
+          window.Tree.hideTooltip();
+        });
+        ghostMarker.addEventListener('click', () => {
           if (window.UI) window.UI.showDetail(entry.id);
         });
+        svg.appendChild(ghostMarker);
 
-        svg.appendChild(pinGroup);
+        // 2D. Circular Decision Marker with Milestone Number (01, 02, 03)
+        const decisionMarker = createSvgElement('g', {
+          class: 'decision-marker-group',
+          transform: `translate(${wp.x}, ${wp.y})`
+        });
+        const markerHalo = createSvgElement('circle', {
+          class: 'decision-marker-halo',
+          cx: 0,
+          cy: 0,
+          r: 11
+        });
+        const markerBg = createSvgElement('circle', {
+          class: 'decision-marker-bg',
+          cx: 0,
+          cy: 0,
+          r: 11.5
+        });
+        const markerText = createSvgElement('text', {
+          class: 'decision-marker-num',
+          x: 0,
+          y: 0
+        });
+        markerText.textContent = milestoneNum;
 
-        // 4. Build Compact Sleek Milestone Status Pill in HTML container
+        decisionMarker.appendChild(markerHalo);
+        decisionMarker.appendChild(markerBg);
+        decisionMarker.appendChild(markerText);
+
+        decisionMarker.addEventListener('mouseenter', (e) => {
+          const rect = decisionMarker.getBoundingClientRect();
+          window.Tree.showTooltip(entry, rect.left + window.scrollX + 20, rect.top + window.scrollY - 30);
+        });
+        decisionMarker.addEventListener('mouseleave', () => {
+          window.Tree.hideTooltip();
+        });
+        decisionMarker.addEventListener('click', () => {
+          if (window.UI) window.UI.showDetail(entry.id);
+        });
+        svg.appendChild(decisionMarker);
+
+        // 3. Build Journal Memory Card with 3-Tier Visual Hierarchy
+        // Hierarchy: Date (small) -> Main Decision (large) -> Counterfactual (smaller & italic)
         const cardEl = document.createElement('div');
-        cardEl.className = `milestone-pill-card ${statusClass} ${i % 2 === 0 ? 'card-stagger-left' : 'card-stagger-right'}`;
+        cardEl.className = `journal-memory-card ${wp.isLeft ? 'card-stagger-left' : 'card-stagger-right'}`;
         cardEl.dataset.entryId = entry.id;
 
+        const rawDid = entry.did || 'No action recorded';
+        const rawWanted = entry.wanted || 'No intention recorded';
+
         cardEl.innerHTML = `
-          <div class="milestone-pill-top">
-            <div class="milestone-pill-left">
-              <span class="milestone-num-badge">${milestoneNum}</span>
-              <span class="milestone-date-text">${formattedDate}</span>
-            </div>
-            <span class="milestone-status-badge ${statusClass}">
-              <span class="status-dot"></span>
-              <span>${statusLabel}</span>
-            </span>
+          <div class="card-date-header">
+            <span>${milestoneNum} · ${formattedDate}</span>
           </div>
-          <div class="milestone-pill-bottom">
-            <span class="milestone-tag-chip">🏷️ ${tagLabel}</span>
-            <span class="milestone-click-hint">Click for details ↗</span>
+          <div class="card-decision-title">
+            <span class="card-decision-prefix">I chose to:</span>
+            "${escapeHtml(rawDid)}"
+          </div>
+          <div class="card-counterfactual-text">
+            Instead: "${escapeHtml(rawWanted)}"
           </div>
         `;
 
@@ -267,9 +270,15 @@
         cardEl.addEventListener('mouseenter', (e) => {
           const rect = cardEl.getBoundingClientRect();
           window.Tree.showTooltip(entry, rect.left + window.scrollX + 20, rect.top + window.scrollY - 30);
+          branchAlt.style.opacity = '1';
+          branchAlt.style.strokeWidth = '3px';
         });
         cardEl.addEventListener('mouseleave', () => {
           window.Tree.hideTooltip();
+          if (!container.classList.contains('walk-other-path')) {
+            branchAlt.style.opacity = '0.8';
+            branchAlt.style.strokeWidth = '2.2px';
+          }
         });
 
         if (cardsContainer) cardsContainer.appendChild(cardEl);
@@ -287,7 +296,11 @@
         container.classList.toggle('walk-other-path');
         container.classList.toggle('tree-normal');
       }
-      if (btn) btn.classList.toggle('active');
+      if (btn) {
+        const isAlt = container && container.classList.contains('walk-other-path');
+        btn.classList.toggle('active', isAlt);
+        btn.textContent = isAlt ? '← Back to actual path' : 'Explore alternate path →';
+      }
     },
 
     showTooltip: function(entry, x, y) {
@@ -297,13 +310,13 @@
         tooltip.className = 'tree-tooltip';
         document.body.appendChild(tooltip);
       }
-      const emojiMap = { 'done': '✅', 'partial': '🟡', 'not-done': '❌' };
+      const statusLabel = entry.status === 'done' ? 'Completed' : (entry.status === 'partial' ? 'Detour' : 'Roadblock');
       
       tooltip.innerHTML = `
         <div class="tooltip-date">${window.UI ? window.UI.formatDate(entry.date) : entry.date}</div>
-        <div class="tooltip-wanted"><span>Intended:</span> ${escapeHtml(entry.wanted || '')}</div>
-        <div class="tooltip-did"><span>Traveled:</span> ${escapeHtml(entry.did || '')}</div>
-        <div class="tooltip-status">${emojiMap[entry.status] || ''} <span style="font-weight: normal; font-size: 11px; text-transform: capitalize;">${entry.status || ''}</span></div>
+        <div class="tooltip-did"><strong>Actual:</strong> "${escapeHtml(entry.did || 'No action recorded')}"</div>
+        <div class="tooltip-wanted"><strong>Alternative:</strong> "${escapeHtml(entry.wanted || 'No intention recorded')}"</div>
+        <div class="tooltip-status">✦ ${statusLabel}</div>
       `;
       tooltip.style.left = `${x}px`;
       tooltip.style.top = `${y}px`;
@@ -319,31 +332,50 @@
       const svg = document.getElementById('hero-tree-svg');
       if (!svg) return;
       svg.innerHTML = '';
-      svg.setAttribute('viewBox', '0 0 240 200');
+      svg.setAttribute('viewBox', '0 0 240 180');
       
-      // Mini Winding Road on Landing Page
+      // Mini Illustrated Inked Road on Landing Page
       const road = createSvgElement('path', {
-        class: 'road-highway-bed',
-        d: 'M 120 190 C 80 145, 160 100, 120 40'
+        class: 'road-track animate',
+        d: 'M 120 165 C 120 125, 75 105, 80 65 C 85 35, 140 30, 155 15'
       });
-      road.style.strokeWidth = '24px';
+      road.style.strokeWidth = '12px';
       svg.appendChild(road);
 
-      const stripe = createSvgElement('path', {
-        class: 'road-center-stripe',
-        d: 'M 120 190 C 80 145, 160 100, 120 40'
+      // Orange actual branch
+      const branchOrange = createSvgElement('path', {
+        class: 'branch-actual animate',
+        d: 'M 80 65 Q 115 55, 140 45'
       });
-      stripe.style.strokeWidth = '2px';
-      stripe.style.strokeDasharray = '6 6';
-      svg.appendChild(stripe);
+      svg.appendChild(branchOrange);
 
-      const beacon = createSvgElement('circle', {
-        class: 'waypoint-beacon-core',
-        cx: 120,
-        cy: 40,
-        r: 6
+      // Blue alternative branch
+      const branchBlue = createSvgElement('path', {
+        class: 'branch-alternative animate',
+        d: 'M 80 65 Q 45 60, 30 75'
       });
-      svg.appendChild(beacon);
+      svg.appendChild(branchBlue);
+
+      // Markers
+      const m1 = createSvgElement('circle', {
+        class: 'decision-marker-bg',
+        cx: 80, cy: 65, r: 8.5
+      });
+      const t1 = createSvgElement('text', {
+        class: 'decision-marker-num',
+        x: 80, y: 65
+      });
+      t1.textContent = '01';
+      t1.style.fontSize = '7.5px';
+
+      const ghost = createSvgElement('circle', {
+        class: 'alt-ghost-circle',
+        cx: 30, cy: 75, r: 4.5
+      });
+
+      svg.appendChild(m1);
+      svg.appendChild(t1);
+      svg.appendChild(ghost);
     }
   };
 

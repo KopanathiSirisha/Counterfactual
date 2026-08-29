@@ -121,13 +121,13 @@
       document.getElementById('modal-wanted').textContent = entry.wanted;
       document.getElementById('modal-did').textContent = entry.did;
       
-      const emojiMap = { 'done': '✅', 'partial': '🟡', 'not-done': '❌' };
-      document.getElementById('modal-status').textContent = `${emojiMap[entry.status] || ''} ${entry.status || ''}`;
+      const symbolMap = { 'done': '✦ Completed', 'partial': '◈ Partial', 'not-done': '✧ Not Done' };
+      document.getElementById('modal-status').textContent = symbolMap[entry.status] || (entry.status || '');
       
       const tagEl = document.getElementById('modal-tag');
       if(tagEl) tagEl.textContent = (entry.tag || '').charAt(0).toUpperCase() + (entry.tag || '').slice(1);
       
-      document.getElementById('modal-intensity').textContent = '⚡'.repeat(entry.intensity || 3);
+      document.getElementById('modal-intensity').textContent = '●'.repeat(entry.intensity || 3);
       
       const photoEl = document.getElementById('modal-photo');
       if(photoEl) {
@@ -375,43 +375,43 @@
     TIME_THEMES: {
       morning: {
         key: 'morning',
-        name: 'Morning Sky',
+        name: 'Warm Cream & Olive Ink',
         icon: '🌅',
-        badge: '🌅 Morning Reflection',
-        greeting: 'Hello there! Good morning, have a nice day 🌱',
-        quote: '“Every morning brings a new seed of intention. Water it with action.”',
-        entryPill: '🌅 Morning Reflection',
-        entryMsg: 'What intentions will you plant this morning?'
+        badge: '🌅 Morning Light & Olive Ink',
+        greeting: 'Every morning brings a new fork in the road.',
+        quote: '“Choices define the architecture of our days. Map both your intention and your action.”',
+        entryPill: '🌅 Morning Intentions',
+        entryMsg: 'What path do you envision for today?'
       },
       afternoon: {
         key: 'afternoon',
-        name: 'Afternoon Sun',
+        name: 'Parchment & Green Ink',
         icon: '☀️',
-        badge: '☀️ Afternoon Focus',
-        greeting: 'Good afternoon! Keep the momentum flowing 🌻',
-        quote: '“The sun reaches its height; let your actions reflect your highest goals.”',
-        entryPill: '☀️ Afternoon Journal',
-        entryMsg: 'How is your afternoon journey unfolding?'
+        badge: '☀️ Parchment & Deep Green Ink',
+        greeting: 'The day is in motion; observe the path taken.',
+        quote: '“In the middle of the journey, our actions shape the reality we inhabit.”',
+        entryPill: '☀️ Midday Record',
+        entryMsg: 'Capture the decisions that unfolded today.'
       },
       evening: {
         key: 'evening',
-        name: 'Sunset Twilight',
+        name: 'Dusky Beige & Copper',
         icon: '🌇',
-        badge: '🌇 Evening Reflection',
-        greeting: 'Good evening! Take a restful moment to reflect 🌇',
-        quote: '“As twilight settles in, celebrate both what you wanted and what you achieved.”',
-        entryPill: '🌇 Evening Review',
-        entryMsg: 'Pause and record your evening reflection.'
+        badge: '🌇 Dusky Beige & Muted Copper',
+        greeting: 'Twilight reflections on what was and what could have been.',
+        quote: '“To understand ourselves, we must reflect on the road taken and the alternate paths left behind.”',
+        entryPill: '🌇 Evening Examination',
+        entryMsg: 'Record the divergence between intention and reality.'
       },
       night: {
         key: 'night',
-        name: 'Starry Night',
+        name: 'Midnight Constellation',
         icon: '🌌',
-        badge: '🌌 Night Meditation',
-        greeting: 'Peaceful night! Rest well under the quiet stars 🌌✨',
-        quote: '“Under the calm canopy of stars, every thought prepares for tomorrow’s sunrise.”',
-        entryPill: '🌌 Night Meditation',
-        entryMsg: 'Rest your mind and capture your daily reflections.'
+        badge: '🌌 Midnight Constellation',
+        greeting: 'The stillness of night reveals the map of your choices.',
+        quote: '“Under the quiet constellation of decisions, every day becomes a point of light in your personal history.”',
+        entryPill: '🌌 Night Reflection',
+        entryMsg: 'Map today’s choices before tomorrow unfolds.'
       }
     },
 
